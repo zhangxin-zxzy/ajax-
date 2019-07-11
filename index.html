@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="button" value="获取一条随机笑话" id="btn1">
+    <input type="button" value="发送post请求" id="btn2">
+    <input type="button" value="获取多条随机笑话" id="btn3">
+    <input type="button" value="发送ajax的get请求" id="btn4">
+    <input type="button" value="发送ajax的post请求" id="btn5">
+    <script>
+        //get封装
+        var get = function (forms) {
+            var xhr = new XMLHttpRequest();
+            if (forms.data) {
+                forms.url += '?' + forms.data;
+            };
+            xhr.open('get', forms.url);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    forms.success(xhr.responseText);
+                }
+            }
+            xhr.send();
+        }
+        //post封装
+        var post = function (forms) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('post', forms.url);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    forms.success(xhr.responseText);
+                }
+            }
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhr.send(forms.data);
+        }
+        //ajax封装
+        var ajax = function (forms) {
+            var xhr = new XMLHttpRequest();
+            if (forms.datatype == 'get' && forms.data) {
+                forms.url += '?' + forms.data;
+            }
+            xhr.open(forms.datatype, forms.url);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    forms.success(xhr.responseText);
+                }
+            }
+            if (forms.datatype == 'post') {
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.send(forms.data);
+            } else {
+                xhr.send();
+            }
+
+        }
+
+        //测试
+        document.getElementById('btn1').onclick = function () {
+            get({
+                url: 'https://autumnfish.cn/api/joke',
+                success: function (res) {
+                    alert(res);
+                }
+            })
+        }
+        document.getElementById('btn2').onclick = function () {
+            post({
+                url: 'https://autumnfish.cn/api/user/check',
+                data: 'username=张鑫',
+                success: function (res) {
+                    alert(res);
+                }
+            })
+        }
+        document.getElementById('btn3').onclick = function () {
+            get({
+                url: 'https://autumnfish.cn/api/joke/list',
+                data: 'num=3',
+                success: function (res) {
+                    alert(res);
+                }
+            })
+        }
+        document.getElementById('btn4').onclick = function () {
+            ajax({
+                datatype: 'get',
+                url: 'https://autumnfish.cn/api/joke/list',
+                data: 'num=3',
+                success: function (res) {
+                    alert(res);
+                }
+            })
+        }
+        document.getElementById('btn5').onclick = function () {
+            ajax({
+                datatype: 'post',
+                url: 'https://autumnfish.cn/api/user/check',
+                data: 'username=张鑫',
+                success: function (res) {
+                    alert(res);
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>
